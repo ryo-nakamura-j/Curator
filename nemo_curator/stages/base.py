@@ -81,7 +81,7 @@ class ProcessingStage(ABC, Generic[X, Y], metaclass=StageMeta):
 
     _is_abstract_root = True  # prevent base from registering itself
     _name = "ProcessingStage"
-    _resources = Resources(cpus=1.0)
+    _resources = Resources(cpus=2.0)
     _batch_size = 1
 
     @property

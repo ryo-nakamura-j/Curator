@@ -131,6 +131,7 @@ class XennaExecutor(BaseExecutor):
         try:
             register_loguru_serializer()
             ray.init(
+                address='10.128.15.208:6379',
                 ignore_reinit_error=True,
                 runtime_env={
                     # We need to set this env var to avoid ray from setting CUDA_VISIBLE_DEVICES and let xenna do it

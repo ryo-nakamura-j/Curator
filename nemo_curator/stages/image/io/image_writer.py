@@ -93,8 +93,8 @@ class ImageWriterStage(ProcessingStage[ImageBatch, FileGroupTask]):
             img = img[..., :channels_rgb]
 
         with io.BytesIO() as buffer:
-            Image.fromarray(img, mode=mode).save(buffer, format="JPEG", quality=92)
-            return buffer.getvalue(), ".jpg"
+            Image.fromarray(img, mode=mode).save(buffer, format="WebP", quality=92)
+            return buffer.getvalue(), ".webp"
 
     def _write_tar(self, base_name: str, members: list[tuple[str, bytes]]) -> str:
         """Write a tar file with given (member_name, bytes) entries using provided base name.
@@ -182,8 +182,10 @@ class ImageWriterStage(ProcessingStage[ImageBatch, FileGroupTask]):
                         {
                             "image_id": member_basename,
                             "tar_file": tar_path,
-                            "member_name": f"{member_basename}.jpg",
+                            "member_name": f"{member_basename}.webp",
                             "original_path": img_obj.image_path,
+                            "aesthetic_score": img_obj.aesthetic_score if hasattr(img_obj, 'aesthetic_score') else None,
+                            "nsfw_score": img_obj.nsfw_score if hasattr(img_obj, 'nsfw_score') else None,
                             # Store user metadata as JSON-ish via repr to avoid pandas dependency
                             "metadata": repr(img_obj.metadata)
                             if isinstance(img_obj.metadata, dict)

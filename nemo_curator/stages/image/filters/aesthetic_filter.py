@@ -34,7 +34,7 @@ class ImageAestheticFilterStage(BaseFilterStage):
     model_dir: str = None
     num_gpus_per_worker: float = 0.25
     model_inference_batch_size: int = 32  # Number of images to process through model at once
-    score_threshold: float = 0.5
+    score_threshold: float = 0.5 # could be 0-10 scale
     verbose: bool = False
     _name: str = "image_aesthetic_filter"
 
@@ -73,6 +73,8 @@ class ImageAestheticFilterStage(BaseFilterStage):
             # Store scores in ImageObject.aesthetic_score
             for i, image_obj in enumerate(batch):
                 image_obj.aesthetic_score = float(scores[i])
+                # if self.verbose:
+                #     logger.info(f"Image {image_obj.image_id}: aesthetic_score = {image_obj.aesthetic_score:.4f}")
 
         # Filter images based on aesthetic score threshold
         filtered_images = []

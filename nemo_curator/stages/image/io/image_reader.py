@@ -36,7 +36,7 @@ class ImageReaderStage(ProcessingStage[FileGroupTask, ImageBatch]):
     task_batch_size: int = 100
     verbose: bool = True
     num_threads: int = 8
-    num_gpus_per_worker: float = 0.25
+    num_gpus_per_worker: float = 1
     _name: str = "image_reader"
 
     def __post_init__(self) -> None:
@@ -57,6 +57,13 @@ class ImageReaderStage(ProcessingStage[FileGroupTask, ImageBatch]):
     def outputs(self) -> tuple[list[str], list[str]]:
         return ["data"], ["image_data", "image_path", "image_id"]
 
+    def xenna_stage_spec(self):
+        return {
+            "num_workers": 1,
+            "slots_per_actor": 1,
+            "is_fanout_stage": True,
+        }
+
     def _create_dali_pipeline(self, tar_paths: list[str]) -> object:
         try:
             from nvidia.dali import fn, pipeline_def, types
@@ -76,7 +83,7 @@ class ImageReaderStage(ProcessingStage[FileGroupTask, ImageBatch]):
             # Read only JPGs to avoid Python-side JSON parsing overhead
             img_raw = fn.readers.webdataset(
                 paths=tar_paths,
-                ext=["jpg"],
+                ext=["webp"],
                 missing_component_behavior="skip",
             )
             # Decode on GPU when available, otherwise on CPU; keep original sizes (no resize)
@@ -121,7 +128,7 @@ class ImageReaderStage(ProcessingStage[FileGroupTask, ImageBatch]):
                 img_np = img_item if isinstance(img_item, np.ndarray) else img_item.as_array()
                 image_objects.append(
                     ImageObject(
-                        image_path=str(base_path / f"{id_prefix}_{samples_completed + i:06d}.jpg"),
+                        image_path=str(base_path / f"{id_prefix}_{samples_completed + i:06d}.webp"),
                         image_id=f"{id_prefix}_{samples_completed + i:06d}",
                         image_data=img_np,
                     )
