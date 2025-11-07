@@ -186,6 +186,7 @@ class ImageWriterStage(ProcessingStage[ImageBatch, FileGroupTask]):
                             "original_path": img_obj.image_path,
                             "aesthetic_score": img_obj.aesthetic_score if hasattr(img_obj, 'aesthetic_score') else None,
                             "nsfw_score": img_obj.nsfw_score if hasattr(img_obj, 'nsfw_score') else None,
+                            "json_caption": repr(img_obj.json_caption) if hasattr(img_obj, 'json_caption') and img_obj.json_caption is not None else None,
                             # Store user metadata as JSON-ish via repr to avoid pandas dependency
                             "metadata": repr(img_obj.metadata)
                             if isinstance(img_obj.metadata, dict)

@@ -35,6 +35,7 @@ class ImageObject:
         embedding: Image embedding vector as numpy array
         aesthetic_score: Aesthetic quality score as float
         nsfw_score: NSFW probability score as float
+        json_caption: JSON caption data from captioning model
     """
 
     image_path: str = ""
@@ -47,6 +48,7 @@ class ImageObject:
     # classification score
     aesthetic_score: float | None = None
     nsfw_score: float | None = None
+    json_caption: str | dict[str, Any] | None = None 
 
 
 @dataclass
